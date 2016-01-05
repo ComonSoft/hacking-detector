@@ -144,8 +144,6 @@ class scanDirectory {
 				$isCreation = 0 ;
 			}
 			if( (time()-$date) <= $this->delta ) {
-				if( $obj->isDir() )
-					echo "$filename".filectime( "$filename/.")." ".filemtime( "$filename/.")."<br>";
 				$res[] = array( 'obj' => $filename, 'datec' => date("Y/m/d H:i:s", $datec), 'date' => date("Y/m/d H:i:s", $date), 'cre' => $isCreation) ;
 			}
 		}
@@ -229,7 +227,7 @@ class scanDirectory {
 //---------------------End class: scanDirectory-------------------------------
 
 // -- MAIN --------------------------------
-$scan = new scanDirectory( dirname(__DIR__));
+$scan = new scanDirectory( dirname(__DIR__), 'FR');
 $scan->Run();
 $scan->MailReport( 'sender@yourdomain.com', 'receiver@yourdomain.com', 'Alert modifications: www.yourdomain.com');
 ?>
