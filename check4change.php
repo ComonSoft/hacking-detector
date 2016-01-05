@@ -59,15 +59,15 @@ define("cMSG-REPORT-OBJECTS_FR","Nombre d'objets scannés:");
 *-------------------------------------------------------------------------*/
 class DirFilter extends RecursiveFilterIterator
 {
-	private  $mExcludes = array() ; // List of directories to exclude
+	private static $mExcludes = array() ; // List of directories to exclude
 	
 	public function setExcludeDirs( $inArrayDir) {
 		if( $inArrayDir && count($inArrayDir)>0 )
-			$this->mExcludes = $inArrayDir;
+			DirFilter::$mExcludes = $inArrayDir;
 	}
 	
     public function accept() {
-        return !($this->isDir() && in_array($this->getFilename(), $this->mExcludes));
+        return !($this->isDir() && in_array($this->getFilename(), DirFilter::$mExcludes));
     }
 }
 //-----------End function : DirFilter()------------------------------------
@@ -97,7 +97,7 @@ class scanDirectory {
 	*/
 	function  __construct( $inPath=null, $inLang='EN', $inDelta = 3600, $inExclude=null) {
 		if( is_null( $inPath) )
-			$this->homeDir = __DIR__;
+			$this->homeDir = dirname(__DIR__);
 		else
 			$this->homeDir = $inPath;
 		if( $inDelta )
