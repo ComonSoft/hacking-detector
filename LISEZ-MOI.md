@@ -1,22 +1,22 @@
 # hacking-detector
-Script PHP rapide et puissant, à utiliser de préférence dans une tâche cron, pour détecter des fichiers ou des répertories qui ont été modifiés depus l'exécution précédente du script. Envoie un rapport par mail avec tous les changements. Un script PHP pratique et utile pour détecter un hacking, des modifications non autorisées de fichiers, des violiations d'accès au site web. Pas d'utilisation de base de données ni de stockage dans un fichier, le script PHP est autonome.
+Script PHP rapide et puissant, ï¿½ utiliser de prï¿½fï¿½rence dans une tï¿½che cron, pour dï¿½tecter des fichiers ou des rï¿½pertories qui ont ï¿½tï¿½ modifiï¿½s depus l'exï¿½cution prï¿½cï¿½dente du script. Envoie un rapport par mail avec tous les changements. Un script PHP pratique et utile pour dï¿½tecter un hacking, des modifications non autorisï¿½es de fichiers, des violiations d'accï¿½s au site web. Pas d'utilisation de base de donnï¿½es ni de stockage dans un fichier, le script PHP est autonome.
 
 ## Requirements
-PHP 5.3
+PHP >= 5.3 
 
-## Langues supportées pour le rapport
-FRançais
+## Langues supportï¿½es pour le rapport
+FRanï¿½ais
 ENglish
 
 ## Installation
-Changez les paramètres en fonction de votre configuration et téléchargez simplement le fichier check4change.php dans le répertoire de votre choix sur votre serveur web
+Changez les paramï¿½tres en fonction de votre configuration et tï¿½lï¿½chargez simplement le fichier check4change.php dans le rï¿½pertoire de votre choix sur votre serveur web
 
-### Recommandation de sécurité
-Nous vous recommandons de mettre le script dans un répertoire en dehors de la racine de votre site web. Cela rendra l'accès au script par un éventuel hackeur plus difficile.
+### Recommandation de sï¿½curitï¿½
+Nous vous recommandons de mettre le script dans un rï¿½pertoire en dehors de la racine de votre site web. Cela rendra l'accï¿½s au script par un ï¿½ventuel hackeur plus difficile.
 
 ## Utilisation avec cron
-Exécutez simplement le script directement sans paramètres.
-Notez qu'en fonction de votre environnement vous devrez spécifier PHP dans la ligne de commande du cron.
+Exï¿½cutez simplement le script directement sans paramï¿½tres.
+Notez qu'en fonction de votre environnement vous devrez spï¿½cifier PHP dans la ligne de commande du cron.
 ```
 php -f /my/path/check4change.php
 php-cli -f /my/path/check4change.php
@@ -24,29 +24,29 @@ php-cli -f /my/path/check4change.php
 ```
 
 ## Configuration
-Pour configurer le script en fonction de votre serveur, email, intervalle et langue du rapport, changez simplement les paramètres du constructeur et méthode suivants.
+Pour configurer le script en fonction de votre serveur, email, intervalle et langue du rapport, changez simplement les paramï¿½tres du constructeur et mï¿½thode suivants.
 ```
 $scan = new scanDirectory( dirname(__DIR__), 'FR');
 $scan->MailReport( 'emetteur@mydomain.com', 'destinataire@domain.com', 'Alerte modifications: www.votresite.com');
 ```
 
 ###Exemples
-Scan du répertoire parent toutes les 10 minutes
+Scan du rï¿½pertoire parent toutes les 10 minutes
 ```
 $scan = new scanDirectory( dirname(__DIR__), 'EN', 600);
 ```
 
-Scan à partir d'un chemin specifique toutes les 5 minutes
+Scan ï¿½ partir d'un chemin specifique toutes les 5 minutes
 ```
 $scan = new scanDirectory( '/home/www/mydir', 'FR', 300);
 ```
 
-Scan à partir d'un chemin specifique toutes les 5 minutes et exclure des répertoires
+Scan ï¿½ partir d'un chemin specifique toutes les 5 minutes et exclure des rï¿½pertoires
 ```
 $scan = new scanDirectory( '/home/www/mydir', 'EN', 300, array('cache','temp'));
+
 ```
-
-
-
-
-
+Scan ï¿½ partir d'un chemin specifique toutes les 10 minutes et exclure des fichiers
+```
+$scan = new scanDirectory( '/home/www/mydir', 'EN', 600, null, array('log.txt','sitemap.xml'));
+```
