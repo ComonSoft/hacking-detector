@@ -2,7 +2,7 @@
 Fast and powerful PHP script, used in preference by a cron job, to detect files or directories which have been added or modified since the previous execution of the script. Sends an email report with all changes. Useful PHP script for detecting hacking, unauthorized files modification, web access violation. No database and no file storage, standalone PHP script.
 
 ## Requirements
-PHP 5.3
+PHP >= 5.3 
 
 ## Supported report languages
 FRench
@@ -46,3 +46,6 @@ Scan specific path every 5 minutes and exclude directories
 $scan = new scanDirectory( '/home/www/mydir', 'EN', 300, array('cache','temp'));
 ```
 
+Scan specific path every 10 minutes and exclude files
+```$scan = new scanDirectory( '/home/www/mydir', 'EN', 600, null, array('log.txt','sitemap.xml'));
+```
