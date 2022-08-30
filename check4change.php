@@ -3,7 +3,7 @@
 .---------------------------------------------------------------------------.
 |  Software: PHPCheck4Change - PHP script that scan directories and files   |
 |            for change during interval                                     |
-|   Version: 1.0                                                            |
+|   Version: 1.1                                                            |
 |      Site:                                                                |
 | ------------------------------------------------------------------------- |
 |   Authors: Com'onSoft http://www.comonsoft.com                            |
@@ -22,7 +22,7 @@
  * NOTE: Requires PHP version 5.3 or later
  * @package PHPCheck4Change
  * @author Com'onSoft
- * @copyright 2015 Com'onSoft
+ * @copyright 2022 Com'onSoft
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 
@@ -59,7 +59,7 @@ define("cMSG-REPORT-OBJECTS_FR","Nombre d'objets scannés:");
 *-------------------------------------------------------------------------*/
 class DirFilter extends RecursiveFilterIterator
 {
-	private static $mExcludes = array() ; // List of directories to exclude
+	private static $mExcludes = array(); // List of directories to exclude
 	
 	public function setExcludeDirs( $inArrayDir) {
 		if( $inArrayDir && count($inArrayDir)>0 )
@@ -78,14 +78,15 @@ class DirFilter extends RecursiveFilterIterator
 *	        Generate a report and send report by mail
 */
 class scanDirectory {
-	private $nbObjects = 0;		// Number of objects scanned
-	private $start, $end ;		// Timers
-	private $result;			// Array result of scan
-	private $report = null;		// Human readable report
-	private $delta = 3600 ;		// Default delta interval in seconds
-	private $homeDir ;			// Start directory scanning
-	private $excludeDir = null;	// Array of exclude directories
-	private $lang = 'EN' ;		// Default language for report
+	private $nbObjects = 0;			// Number of objects scanned
+	private $start, $end ;			// Timers
+	private $result;				// Array result of scan
+	private $report = null;			// Human readable report
+	private $delta = 3600 ;			// Default delta interval in seconds
+	private $homeDir ;				// Start directory scanning
+	private $excludeDir = null;		// Array of exclude directories
+	private $lang = 'EN' ;			// Default language for report
+	private $excludeFile = null;	// Array of exclude files
 	
 	/*
 	* function: __constructor( $inPath=null, $inDelta = 3600, $inExclude=null)
@@ -94,8 +95,9 @@ class scanDirectory {
 	*		chars(2) = language iso code for report
 	*		int $inDelta = time delta to check in seconds. Recomanded delta is 3600s interval for a cron running each hour
 	*		array string $inExclude = null or array of directories exclusion
+	*		array string $inExcludeFile = null or array of directories exclusion
 	*/
-	function  __construct( $inPath=null, $inLang='EN', $inDelta = 3600, $inExclude=null) {
+	function  __construct( $inPath=null, $inLang='EN', $inDelta = 3600, $inExclude=null, $inExcludeFile = null) {
 		if( is_null( $inPath) )
 			$this->homeDir = dirname(__DIR__);
 		else
@@ -104,6 +106,8 @@ class scanDirectory {
 			$this->delat = $inDelta;
 		if( $inExclude )
 			$this->excludeDir = $inExclude;
+		if($inExcludeFile)
+			$this->excludeFile = $inExcludeFile;	
 		// Verify supported languages
 		if( $inLang=='EN' || $inLang=='FR')
 			$this->lang = $inLang;
@@ -133,6 +137,11 @@ class scanDirectory {
 			$root->setExcludeDirs(  $this->excludeDir);
 		}
 		foreach ( new RecursiveIteratorIterator($root, RecursiveIteratorIterator::SELF_FIRST) as $filename => $obj ) {
+			if($obj->isFile() && !empty($this->excludeFile)){
+				if(in_array($obj->getFilename(), $this->excludeFile)){
+					continue;
+				}
+			}
 			$this->nbObjects++;
 			$datec = $obj->getCTime();
 			$date = $obj->getMTime();
