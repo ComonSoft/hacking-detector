@@ -47,5 +47,6 @@ $scan = new scanDirectory( '/home/www/mydir', 'EN', 300, array('cache','temp'));
 ```
 
 Scan specific path every 10 minutes and exclude files
-```$scan = new scanDirectory( '/home/www/mydir', 'EN', 600, null, array('log.txt','sitemap.xml'));
+```
+$scan = new scanDirectory( '/home/www/mydir', 'EN', 600, null, array('log.txt','sitemap.xml'));
 ```
