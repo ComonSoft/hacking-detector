@@ -103,7 +103,7 @@ class scanDirectory {
 		else
 			$this->homeDir = $inPath;
 		if( $inDelta )
-			$this->delat = $inDelta;
+			$this->$delta = $inDelta;
 		if( $inExclude )
 			$this->excludeDir = $inExclude;
 		if($inExcludeFile)
@@ -143,7 +143,10 @@ class scanDirectory {
 				}
 			}
 			$this->nbObjects++;
-			$datec = $obj->getCTime();
+			$datec = exec('stat --format=%W '.$obj->getRealPath());
+			if( $datec==false) {
+				$datec = $obj->getCTime();
+			}
 			$date = $obj->getMTime();
 			
 			if( $datec==$date ) {	// Object created
