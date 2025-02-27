@@ -6,11 +6,11 @@
 |   Version: 1.1                                                            |
 |      Site:                                                                |
 | ------------------------------------------------------------------------- |
-|   Authors: Com'onSoft http://www.comonsoft.com                            |
+|   Authors: Com'onSoft https://www.comonsoft.com                           |
 |   Founder: Com'onSoft (original founder)                                  |
 | ------------------------------------------------------------------------- |
 |   License: Distributed under the Lesser General Public License (LGPL)     |
-|            http://www.gnu.org/copyleft/lesser.html                        |
+|            https://www.gnu.org/copyleft/lesser.html                        |
 | This program is distributed in the hope that it will be useful - WITHOUT  |
 | ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or     |
 | FITNESS FOR A PARTICULAR PURPOSE.                                         |
@@ -25,6 +25,17 @@
  * @copyright 2022 Com'onSoft
  * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
+
+/* Debug only */
+if (!defined('_MODE_DEBUG_')) {
+	define('_MODE_DEBUG_', false);
+}
+
+if (_MODE_DEBUG_ === true) {
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+}
 
 set_time_limit(0);	// No time limit, normaly script running on a cron job as a php command line
 
@@ -87,6 +98,7 @@ class scanDirectory {
 	private $excludeDir = null;		// Array of exclude directories
 	private $lang = 'EN' ;			// Default language for report
 	private $excludeFile = null;	// Array of exclude files
+	private $reportDir = false;		// Display or not directories in report
 	
 	/*
 	* function: __constructor( $inPath=null, $inDelta = 3600, $inExclude=null)
@@ -97,17 +109,19 @@ class scanDirectory {
 	*		array string $inExclude = null or array of directories exclusion
 	*		array string $inExcludeFile = null or array of directories exclusion
 	*/
-	function  __construct( $inPath=null, $inLang='EN', $inDelta = 3600, $inExclude=null, $inExcludeFile = null) {
+	function  __construct( $inPath=null, $inLang='EN', $inDelta = 3600, $inExclude=null, $inExcludeFile = null, $inReportDir=false) {
 		if( is_null( $inPath) )
 			$this->homeDir = dirname(__DIR__);
 		else
 			$this->homeDir = $inPath;
 		if( $inDelta )
-			$this->$delta = $inDelta;
+			$this->delta = $inDelta;
 		if( $inExclude )
 			$this->excludeDir = $inExclude;
 		if($inExcludeFile)
 			$this->excludeFile = $inExcludeFile;	
+		if(is_bool($inReportDir))
+			$this->reportDir = $inReportDir;	
 		// Verify supported languages
 		if( $inLang=='EN' || $inLang=='FR')
 			$this->lang = $inLang;
@@ -143,6 +157,11 @@ class scanDirectory {
 				}
 			}
 			$this->nbObjects++;
+
+			if($obj->isDir() && $this->reportDir==false){
+					continue;
+			}				
+
 			$datec = exec('stat --format=%W '.$obj->getRealPath());
 			if( $datec==false) {
 				$datec = $obj->getCTime();
@@ -150,7 +169,7 @@ class scanDirectory {
 			$date = $obj->getMTime();
 			
 			if( $datec==$date ) {	// Object created
-				$isCreation = 1 ;
+				$isCreation = true ;
 			}
 			else {
 				$isCreation = 0 ;
